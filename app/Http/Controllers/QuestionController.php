@@ -11,6 +11,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class QuestionController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('jwt', ['except' => ['index', 'show']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -54,8 +58,12 @@ class QuestionController extends Controller
      */
     public function update(UpdateQuestionRequest $request, Question $question)
     {
-        $question->update($request->all());
-        return response('updated');
+        $question->fill($request->all());
+        if ($question->isClean()) {
+            return response('You have to specify different data', Response::HTTP_NOT_MODIFIED);
+        }
+        $question->update();
+        return response('Questis has been updated', Response::HTTP_ACCEPTED);
     }
 
     /**
