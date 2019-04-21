@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\SignUpRequest;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -23,7 +23,7 @@ class SignUpController extends Controller
      * @param RegistersUsers $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register(RegisterRequest $request)
+    public function register(SignUpRequest $request)
     {
         User::create($request->all());
 

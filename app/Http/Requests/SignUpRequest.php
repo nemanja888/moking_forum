@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Config;
 
-class RegisterRequest extends FormRequest
+class SignUpRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,6 +24,6 @@ class RegisterRequest extends FormRequest
      */
     public function rules()
     {
-        return Config::get('boilerplate.register_user.validation_rules');
+        return Config::get('boilerplate.signup.validation_rules');
     }
 }

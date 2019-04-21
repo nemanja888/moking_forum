@@ -1,12 +1,6 @@
 <?php
 
 return [
-    'register_user' => [
-        'validation_rules' => [
-            'email' => 'required|email|max:128|unique:users',
-            'password' => 'required|string|max:256',
-        ]
-    ],
   'store_question' => [
       'validation_rules' => [
             'title' => 'required|string|max:128',
@@ -47,4 +41,11 @@ return [
             'body' => 'string|max:2048',
         ]
     ],
+    'signup' => [
+        'validation_rules' => [
+            'name' => 'required|string|max:128',
+            'email' => 'required|email|max:128|unique:users',
+            'password' => 'required|string|max:256|confirmed'
+        ]
+    ]
 ];

@@ -16,7 +16,8 @@ Vue.use(Vuetify);
 
 import User from './Helpers/User';
 window.User = User;
-console.log(User.id());
+window.EventBus = new Vue();
+// console.log(User.loggedIn());
 
 /**
  * The following block of code may be used to automatically register your
