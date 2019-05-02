@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateQuestionRequest;
 use App\Http\Resources\QuestionResource;
 use App\Question;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 class QuestionController extends Controller
@@ -18,7 +19,7 @@ class QuestionController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index()
     {
@@ -33,16 +34,17 @@ class QuestionController extends Controller
      */
     public function store(StoreQuestionReuest $request)
     {
-        Question::create($request->all());
+        $data = $request->all();
+        $question = auth()->user()->questions()->create($data);
 
-        return Response('Created', Response::HTTP_CREATED);
+        return Response(new QuestionResource($question), Response::HTTP_CREATED);
     }
 
     /**
      * Display the specified resource.
      *
      * @param \App\Question $question
-     * @return Question
+     * @return QuestionResource
      */
     public function show(Question $question)
     {
@@ -56,14 +58,18 @@ class QuestionController extends Controller
      * @param  \App\Question  $question
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateQuestionRequest $request, Question $question)
+    public function update(UpdateQuestionRequest $request, $id)
     {
+        $question = Question::findOrFail($id);
+
         $question->fill($request->all());
         if ($question->isClean()) {
+
             return response('You have to specify different data', Response::HTTP_NOT_MODIFIED);
         }
-        $question->update();
-        return response('Questis has been updated', Response::HTTP_ACCEPTED);
+        $question = tap($question)->update();
+
+        return response(new QuestionResource($question), Response::HTTP_ACCEPTED);
     }
 
     /**
@@ -73,8 +79,9 @@ class QuestionController extends Controller
      * @return \Illuminate\Http\Response
      * @throws \Exception
      */
-    public function destroy(Question $question)
+    public function destroy($id)
     {
+        $question = Question::findOrFail($id);
         $question->delete();
 
         return response(null, Response::HTTP_NO_CONTENT);
