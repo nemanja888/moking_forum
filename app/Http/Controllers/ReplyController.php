@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateReplyRequest;
 use App\Http\Resources\ReplyResource;
 use App\Question;
 use App\Reply;
+use Illuminate\Http\Resources\Json\Resource;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -62,16 +63,16 @@ class ReplyController extends Controller
      */
     public function update(Question $question, UpdateReplyRequest $request, Reply $reply)
     {
-        if ($reply->id == Auth::user()->id) {
+        if ($reply->user_id == Auth::user()->id) {
+            $reply->body = $request->reply;
 
-            $reply->fill($request->all());
             if ($reply->isClean()) {
 
                 return response('You have to specify different data', Response::HTTP_NOT_MODIFIED);
             }
-            $reply->update();
+            $reply = tap($reply)->update();
 
-            return response('Reply has been updated', Response::HTTP_ACCEPTED);
+            return response(new ReplyResource($reply), Response::HTTP_ACCEPTED);
         }
 
         return response('You are not authorized to update this reply', Response::HTTP_OK);

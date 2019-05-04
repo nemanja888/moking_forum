@@ -1,5 +1,7 @@
 <template>
     <div class="mt-4">
+        <h2>Add new reply:</h2>
+        <v-divider></v-divider>
         <markdown-editor v-model="form.body"></markdown-editor>
         <v-btn icon @click="submit">
             <v-icon color="green">done</v-icon>

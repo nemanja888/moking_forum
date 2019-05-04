@@ -12,7 +12,7 @@
             ></app-show-question>
             <v-container>
                 <app-show-reply
-                        :replies="replies"
+                        :question="question"
                 ></app-show-reply>
                 <app-new-reply
                         :slug="slug"
@@ -34,7 +34,6 @@
             return  {
                 question: null,
                 editing: false,
-                replies: null,
                 slug: null,
             }
         },
@@ -59,7 +58,6 @@
                     .then(res => {
                         this.question = res.data.data;
                         if (this.question.replies_count > 0) {
-                            this.replies = this.question.replies;
                             this.slug = this.question.slug;
                         }
                     })
