@@ -19,42 +19,35 @@ class User {
             window.location = '/forum';
         }
     }
-
     hasToken () {
         const storedToken = AppStorage.getToken();
         if (storedToken) {
-            return Token.isValid(storedToken) ? true : false;
+            return Token.isValid(storedToken) ? true : this.logout();
         }
 
         return false;
     }
-
     loggedIn () {
         return this.hasToken();
     }
-
     logout () {
         AppStorage.clear();
         window.location = '/forum';
     }
-
     name() {
         if (this.loggedIn()) {
             return AppStorage.getUser();
         }
     }
-
     id() {
         if (this.loggedIn()) {
             const payload = Token.payload(AppStorage.getToken());
             return payload.sub;
         }
     }
-
     own(id) {
         return this.id() === id;
     }
-
 }
 
 export default User = new User();

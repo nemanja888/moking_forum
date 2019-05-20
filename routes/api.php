@@ -14,6 +14,10 @@ Route::post('like/{reply}', 'LikeController@like');
 Route::delete('like/{reply}', 'LikeController@dislike');
 
 
+//notifications
+Route::post('notifications', 'NotificationController@index');
+Route::post('markAsRead', 'NotificationController@markAsRead');
+
 Route::group([
 
     'prefix' => 'auth'

@@ -65,7 +65,8 @@
                 EventBus.$on('cancelEditing', () => {
                     this.editing = false;
                 });
-            }
+            },
+
         },
         created() {
             this.listen()

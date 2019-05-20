@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\DeleteReplyEvent;
+use App\Events\LikeEvent;
 use App\Http\Requests\StoreReplyRequest;
 use App\Http\Requests\UpdateReplyRequest;
 use App\Http\Resources\ReplyResource;
+use App\Notifications\NewReplyNotification;
 use App\Question;
 use App\Reply;
 use Illuminate\Http\Resources\Json\Resource;
@@ -37,9 +40,13 @@ class ReplyController extends Controller
      */
     public function store(Question $question, StoreReplyRequest $request)
     {
-        $reply = new ReplyResource($question->replies()->create($request->all()));
+        $reply = $question->replies()->create($request->all());
+        $user = $question->user;
+        if ($reply->user_id !== $question->user_id) {
+            $user->notify(new NewReplyNotification($reply));
+        }
 
-        return response(['reply' => $reply], Response::HTTP_CREATED);
+        return response(['reply' => new ReplyResource($reply)], Response::HTTP_CREATED);
     }
 
     /**
@@ -89,7 +96,8 @@ class ReplyController extends Controller
     public function destroy(Question $question, Reply $reply)
     {
         $reply->delete();
+        broadcast(new DeleteReplyEvent($reply->id))->toOthers();
 
-        return response( 'deleted', Response::HTTP_ACCEPTED);
+        return response( null, Response::HTTP_NO_CONTENT);
     }
 }
