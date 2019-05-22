@@ -6,8 +6,6 @@ use App\Http\Requests\StoreQuestionReuest;
 use App\Http\Requests\UpdateQuestionRequest;
 use App\Http\Resources\QuestionResource;
 use App\Question;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 class QuestionController extends Controller

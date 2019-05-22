@@ -46,7 +46,8 @@
             return {
                 read: {},
                 unRead: {},
-                unReadCount: 0
+                unReadCount: 0,
+                sound: "http://soundbible.com/mp3/Air%20Plane%20Ding-SoundBible.com-496729130.mp3"
             }
         },
         computed: {
@@ -66,12 +67,17 @@
 
             Echo.private('App.User.' + User.id())
                 .notification((notification) => {
+                    this.playSound();
                     this.unRead.unshift(notification);
                     this.unReadCount++;
 
                 })
         },
         methods:{
+            playSound() {
+                let alert = new Audio(this.sound);
+                alert.play();
+            },
             getNotifications() {
                 axios.post('/api/notifications')
                     .then(res => {

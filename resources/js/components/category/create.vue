@@ -1,5 +1,12 @@
 <template>
     <v-container>
+        <v-alert
+                v-if="errors"
+                type="error"
+                :value="true"
+        >
+            Error. Wrong input!
+        </v-alert>
         <v-layout row >
             <v-flex
                     sm12
@@ -23,6 +30,7 @@
                             <v-btn
                                     color="green"
                                     type="submit"
+                                    :disabled="disabled"
                             >
                                 Create
                             </v-btn>
@@ -40,7 +48,9 @@
                       <h2>Update Category</h2>
                   </v-flex>
                   <v-flex sm-2>
-                      <v-btn @click="getCreate">
+                      <v-btn
+                              @click="getCreate"
+                      >
                           Create
                       </v-btn>
                   </v-flex>
@@ -59,6 +69,7 @@
                         <v-btn
                                 color="green"
                                 type="submit"
+                                :disabled="disabled"
                         >
                             Update
                         </v-btn>
@@ -110,7 +121,8 @@
                     id: null
                 },
                 categories: {},
-                editing: false
+                editing: false,
+                errors: null
             }
         },
         methods: {
@@ -131,24 +143,29 @@
                         this.categories.unshift(res.data);
                         this.form.name = null;
                     })
-                    .catch(error => console.log(error.response.data));
+                    .catch(error => this.errors = error.response.data.errors);
             },
             update() {
                 axios.patch(`/api/category/${this.form.id}`, this.form)
                     .then(res => this.$router.go())
-                    .catch(error => this.errors = error.response.data)
+                    .catch(error => this.errors = error.response.data.errors)
             },
             destroy(category, index) {
                 axios.delete(`/api/category/${category.id}`)
                     .then(res => this.categories.splice(index, 1))
-                    .catch(error => this.errors = error.response.data)
+                    .catch(error => this.errors = error.response.data.errors)
             }
 
+        },
+        computed: {
+          disabled() {
+              return !this.form.name;
+          }
         },
         created () {
             axios.get('/api/category')
                 .then(res => this.categories = res.data.data)
-                .catch(error => console.log(error.response.data));
+                .catch(error => this.errors = error.response.data.errors);
         }
     }
 </script>
